@@ -81,6 +81,28 @@ function importInitialDataset() {
 	});
 }
 
+function splitDatetimeField(sightingObj) {
+	var parts = sightingObj.datetime.split(" ");
+
+	var dayParts = parts[0].split("/");
+	var month = dayParts[0];
+	var day = dayParts[1];
+	var year = dayParts[2];
+
+	var hourParts = parts[1];
+	var hour = hourParts[0];
+	var minute = hourParts[1];
+
+	sightingObj.year = year;
+	sightingObj.month = month;
+	sightingObj.day = day;
+
+	sightingObj.hour = hour;
+	sightingObj.minute = minute;
+
+	delete sightingObj.datetime;
+}
+
 function addInitialDatasetSightings(sightingsList) {
 	console.log("[DB] Recording initial dataset in database...");
 
@@ -91,8 +113,10 @@ function addInitialDatasetSightings(sightingsList) {
 		console.log("[DB] Initialization done.");
 	}
 
-	for (var i = 0; i < sightingsList.length; i++)
+	for (var i = 0; i < sightingsList.length; i++) {
+		splitDatetimeField(sightingsList[i]);
 		transaction.objectStore("sightings").add(sightingsList[i]);
+	}
 }
 
 function addSighting(sighting) {
