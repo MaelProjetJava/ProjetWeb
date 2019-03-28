@@ -1,0 +1,8 @@
+*	text=auto
+*.html	text
+*.css	text
+*.js	text
+*.png	-text
+*.jpg	-text
+*.jpeg	-text
+*.gif	-text
