@@ -32,11 +32,11 @@ function main() {
 			importInitialDataset();
 		else
 			dbReady = true;
-	}
+	};
 	openRequest.onerror  = function(event) {
 		console.log("[DB] Error: unable to open database!");
 		notifyError("Impossible d'ouvrir la base de données IndexedDB!\nLe site ne fonctionnera pas correctement!");
-	}
+	};
 
 	openRequest.onupgradeneeded = createDatabaseStructure;
 }
@@ -115,7 +115,7 @@ function addInitialDatasetSightings(sightingsList) {
 		console.log("[DB] Initial dataset successfully recorded.");
 		dbReady = true;
 		console.log("[DB] Initialization done.");
-	}
+	};
 
 	for (var i = 0; i < sightingsList.length; i++) {
 		splitDatetimeField(sightingsList[i]);
@@ -148,7 +148,7 @@ function getSightingYears(callback) {
 
 		yearList.push(cursor.key);
 		cursor.continue();
-	}
+	};
 }
 
 main();
