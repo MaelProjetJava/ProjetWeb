@@ -160,7 +160,7 @@ function getSightingCountInYear(year, callback, transaction) {
 	};
 }
 
-function sightingCountByYear(callback) {
+function getSightingCountByYear(callback) {
 	getSightingYears(function(yearsList) {
 		var countByYear = [];
 		var transaction = ovniDb.transaction(["sightings"], "readonly");
