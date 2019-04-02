@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Projet Map</title>
+	<meta charset="utf-8">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+   integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+   crossorigin=""/>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+		<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+   integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+   crossorigin=""></script>
+   <link rel="stylesheet" href="test.css">
+   <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+</head>
+<body>
+
+<div class="container">
+	<div class="row-md-4" >
+		<div class="card card-body">
+			<div class="col" style="text-align:center">
+				Titre 
+			</div>
+		</div>
+	
+	</div>
+
+	<div class="row" >
+				
+				<div class="col-md-2" >
+					<
+					<div class="card card-body">
+	
+						<div> lien 1 </div>
+
+						<div> lien 2</div>
+
+						<div> lien 3 </div>
+
+						<div> lien 4 </div>
+
+					</div>
+	
+		
+				</div>
+
+				<div class="col-md-10" >
+					<div class="card card-body">
+						<div class="card card-body" id="test">
+							<div class="row" >
+							
+
+								<div  class="col-md-4 test"> <span id="titre1" >MAP </span></div>
+
+								<div class="col-md-4 test"> <span id="titre2" > STATS </span> </div>
+
+								<div class="col-md-4 test" > <span id="titre3" > - - - - </span> </div>
+								
+							</div>
+				
+
+						</div>
+						<div id=carte>
+
+						<div class="row" >
+							<div class="col-md-12" >
+								<div id="mapid"> </div>
+							</div>
+						</div>
+
+						<div class="row" >
+							<div class="col-md-12" >
+						
+	
+								 <form id="data" role="form">
+								 	<div class="card card-body">
+								 		<div class="form-row">
+								 			<div class="form-group col-md-6">
+												     <label for="date">Date d'apparition</label>
+												    <input class="form-control" type="text" id="date" name="date">
+											
+											</div>
+											<div class="form-group col-md-6">
+												
+											        <label for="time">Heure d'apparition</label>
+											        <input class="form-control" type="text" id="time" name="time">
+											    
+											</div>
+										</div>
+										<div class="form-row">
+								 			<div class="form-group col-md-6">
+											   
+											        <label for="area"> Lieu d'apparition</label>
+											        <input  class="form-control" type="text" id="area" name="area">
+											    
+									    	</div>
+										    <div class="form-group col-md-6">
+											   
+											        <label for="duration">Durée d'apparition</label>
+											        <input  class="form-control" type="text" id="duration" name="duration">
+											   
+											</div>
+										</div>
+										<div class="form-row">
+											<div class="form-group col-md-6">
+											   
+											        <label for="shape">Forme</label>
+											        <input  class="form-control" type="text" id="shape" name="shape">
+
+											       <br/>
+											    <div class="form-row">    
+													<div class="form-group col-md-12">
+														<button type="submit" class="btn btn-primary" >Ajouter/Modifier</button>
+													</div>
+												</div>
+											    
+											</div>
+											<div class="form-group col-md-6">
+											    
+											        <label for="comments">Commentaire</label>
+											        <textarea   class="form-control" id="comments" name="comments"  rows="5" cols="33"> </textarea>
+											</div>
+										
+
+											    
+										</div>
+									</div>
+								</form>
+
+							</div>
+
+						</div>
+						</div>
+
+						<div id="stat">
+								bonjour
+						</div>
+
+					</div>
+	
+				</div>
+
+
+		
+	
+	</div>
+
+
+
+
+
+		
+</div>
+		
+
+ <script >var mymap = L.map('mapid').setView([51.505, -0.09], 13);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(mymap);
+$("#stat").hide();
+$(document).ready(function(){
+  $("#titre1").click(function(){
+
+		$("#carte").show();
+		$("#stat").hide();
+
+	});
+    $("#titre2").click(function(){
+
+		$("#carte").hide();
+		$("#stat").show();
+
+	});
+
+        $("#titre3").click(function(){
+        	window.location="404.html";
+
+
+	});
+
+
+	
+});
+
+</script>
+
+
+</body>
+</html>

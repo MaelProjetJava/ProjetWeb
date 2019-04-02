@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html >
+<meta charset="UTF-8">
+<head>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+   integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+   crossorigin=""/>
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    
+<link rel="stylesheet" href="test.css">
+<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+   integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+   crossorigin=""></script>
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+	<title>Mymap</title>
+</head>
+<body> 
+  <div class="container">
+     <div class="row">
+    <div class="col">
+          <p>azertyuiopqsdfghjklxcvbn</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+
+          <div id="mapid"></div>
+</div>
+  </div>
+ <div class="row">
+    <div class="col">
+ <form action="#">
+    <div>
+        <label for="date">Date d'apparition :</label>
+        <input type="text" id="date" name="date">
+    </div>
+       <div>
+        <label for="time">Heure d'apparition :</label>
+        <input type="text" id="time" name="time">
+    </div>
+    <div>
+        <label for="area"> Lieu d'apparition  :</label>
+        <input type="email" id="area" name="area">
+    </div>
+    <div>
+        <label for="duration">Durée d'apparition  :</label>
+        <input id="duration" name="duration">
+    </div>
+    <div>
+        <label for="shape">Forme  :</label>
+        <input id="shape" name="shape">
+    </div>
+    <div>
+        <label for="comments">Commentaire :</label>
+        <textarea id="comments" name="comments"  rows="5" cols="33"> </textarea>
+    </div>
+
+</form>
+</div>
+</div>
+
+
+ <script >var mymap = L.map('mapid').setView([51.505, -0.09], 13);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(mymap);
+var marker = L.marker([51.5, -0.09]).addTo(mymap);
+
+
+
+var circle = L.circle([51.508, -0.11], {
+    color: 'red',
+    fillColor: '#f03',
+    fillOpacity: 0.5,
+    radius: 500
+}).addTo(mymap);
+var polygon = L.polygon([
+    [51.509, -0.08],
+    [51.503, -0.06],
+    [51.51, -0.047]
+]).addTo(mymap);
+circle.bindPopup("I am a circle.");
+/*
+marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
+
+polygon.bindPopup("I am a polygon.");
+var popup = L.popup()
+    .setLatLng([51.5, -0.09])
+    .setContent("I am a standalone popup.")
+    .openOn(mymap);
+
+function onMapClick(e) {
+    popup
+        .setLatLng(e.latlng)
+        .setContent("You clicked the map at " + e.latlng.toStr
+        ng())
+        .openOn(mymap);
+}
+*/
+
+function ajoutpoint(e) 
+{
+	
+	var lat=e.latlng.lat;
+	var lng=e.latlng.lng;
+
+   var mar=L.marker([lat,lng]).addTo(mymap);
+   mar.bindPopup("<button onClick=\"afficher("+lat+","+lng+")\">   Afficher les donées   </button>");
+       
+}
+
+function afficher(lat,lng){
+  //var ovni=
+  $( "#date").val("");
+  $( "#time").val(lat);
+  $( "#area").val(lng);
+  $( "#shape").val("");
+  $( "#duration").val("");
+  $( "#comments").val("");
+}
+
+mymap.on('click', ajoutpoint);
+
+
+</script>
+</div>
+</body>
+</html>
+
+
+

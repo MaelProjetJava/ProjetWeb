@@ -1,0 +1,26 @@
+
+body{
+	background-color:#330086;
+}
+#mapid{
+ /* utiliser  media queries pour dimensionner la taille */
+	height: 300px;
+	
+}
+.test{
+	text-align: center;
+}
+
+#test{
+	background-color: grey;
+	color: white;
+}
+#titre1:hover{
+	color : black;
+}
+#titre2:hover{
+	color : black;
+}
+#titre3:hover{
+	color : black;
+}
