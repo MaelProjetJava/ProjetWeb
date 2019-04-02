@@ -151,6 +151,27 @@ function getSightingYears(callback) {
 	};
 }
 
+function getSightingShapes(callback) {
+	var transaction = ovniDb.transaction(["sightings"], "readonly");
+
+	var shapeIndex = transaction.objectStore("sightings").index("shape");
+	var cursorRequest = shapeIndex.openKeyCursor(null, "nextunique");
+
+	var shapeList = [];
+
+	cursorRequest.onsuccess = function(event) {
+		var cursor = event.target.result;
+
+		if (!cursor) {
+			callback(shapeList);
+			return;
+		}
+
+		shapeList.push(cursor.key);
+		cursor.continue();
+	};
+}
+
 function getSightingCountInYear(year, callback, transaction) {
 	var yearIndex = transaction.objectStore("sightings").index("year");
 	var request = yearIndex.getAllKeys(IDBKeyRange.only(year));
