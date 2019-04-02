@@ -55,6 +55,7 @@ function handleDbError(event) {
 	if (!dbReady) {
 		console.log("[DB] Error: unable to record initial dataset!");
 		notifyError("Impossible de charger les données initiales!");
+		dbReady = true;
 		return;
 	}
 
