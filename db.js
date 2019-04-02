@@ -89,16 +89,16 @@ function splitDatetimeField(sightingObj) {
 	var day = dayParts[1];
 	var year = dayParts[2];
 
-	var hourParts = parts[1];
+	var hourParts = parts[1].split(":");
 	var hour = hourParts[0];
 	var minute = hourParts[1];
 
-	sightingObj.year = year;
-	sightingObj.month = month;
-	sightingObj.day = day;
+	sightingObj.year = Number(year);
+	sightingObj.month = Number(month);
+	sightingObj.day = Number(day);
 
-	sightingObj.hour = hour;
-	sightingObj.minute = minute;
+	sightingObj.hour = Number(hour);
+	sightingObj.minute = Number(minute);
 
 	delete sightingObj.datetime;
 }
