@@ -130,4 +130,25 @@ function addSighting(sighting) {
 	transaction.objectStore("sightings").add(sighting);
 }
 
+function getSightingYears(callback) {
+	var transaction = ovniDb.transaction(["sightings"], "readonly");
+
+	var yearIndex = transaction.objectStore("sightings").index("year");
+	var cursorRequest = yearIndex.openKeyCursor(null, "nextunique");
+
+	var yearList = [];
+
+	cursorRequest.onsuccess = function(event) {
+		var cursor = event.target.result;
+
+		if (!cursor) {
+			callback(yearList);
+			return;
+		}
+
+		yearList.push(cursor.key);
+		cursor.continue();
+	}
+}
+
 main();
