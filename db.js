@@ -45,7 +45,10 @@ function createDatabaseStructure(event) {
 	console.log("[DB] Database empty. Creating database structure...");
 
 	var db = event.target.result;
-	db.createObjectStore("sightings", {autoIncrement: true, keyPath: "id"});
+	var sightingsStore = db.createObjectStore("sightings", {autoIncrement: true, keyPath: "id"});
+
+	sightingsStore.createIndex("year", "year");
+	sightingsStore.createIndex("shape", "shape");
 
 	dbLoadInitialDataset = true;
 	console.log("[DB] Database structure created.");
