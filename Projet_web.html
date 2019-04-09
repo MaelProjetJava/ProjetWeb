@@ -31,15 +31,15 @@
 				
 				<div class="col-md-2" >
 					<
-					<div class="card card-body">
+					<div class="card card-body ">
 	
-						<div> lien 1 </div>
+						<div class="lien"> lien 1 </div>
 
-						<div> lien 2</div>
+						<div class="lien"> lien 2</div>
 
-						<div> lien 3 </div>
+						<div class="lien"> lien 3 </div>
 
-						<div> lien 4 </div>
+						<div class="lien" > lien 4 </div>
 
 					</div>
 	
@@ -112,7 +112,7 @@
 											       <br/>
 											    <div class="form-row">    
 													<div class="form-group col-md-12">
-														<button type="submit" class="btn btn-primary" >Ajouter/Modifier</button>
+														<button type="submit" class="btn btn-primary"   >Ajouter/Modifier</button>
 													</div>
 												</div>
 											    
@@ -128,7 +128,7 @@
 										</div>
 									</div>
 								</form>
-
+													
 							</div>
 
 						</div>
@@ -160,6 +160,7 @@
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(mymap);
+
 $("#stat").hide();
 $(document).ready(function(){
   $("#titre1").click(function(){
@@ -180,10 +181,51 @@ $(document).ready(function(){
 
 
 	});
+        $(".lien").click(function(){
+        	window.location="404.html";
+
+
+	});
+
 
 
 	
 });
+ 
+var mar=new Array();
+
+function ajoutpoint(e) 
+{
+	
+	var lat=e.latlng.lat;
+	var lng=e.latlng.lng;
+
+
+   mar.push(L.marker([lat,lng]).addTo(mymap));
+
+   console.log(mar);
+   mar.bindPopup("<button onClick=\"afficher("+lat+","+lng+")\">  Modifier  </button>  <button onClick=\"supprimer()\">  Supprimer  </button>");
+
+
+   
+}
+
+	mymap.on('dblclick', ajoutpoint);
+
+function afficher(lat,lng){
+  //var ovni=
+  $( "#date").val("");
+  $( "#time").val(lat);
+  $( "#area").val(lng);
+  $( "#shape").val("");
+  $( "#duration").val("");
+  $( "#comments").val("");
+}
+
+function supprimer(){
+
+	mymap.removeLayer(mar);      
+}
 
 </script>
 
