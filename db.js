@@ -130,6 +130,15 @@ function addSighting(sighting) {
 	transaction.objectStore("sightings").add(sighting);
 }
 
+function getAllSightings(callback) {
+	var transaction = ovniDb.transaction(["sightings"], "readonly");
+	var sightings = transaction.objectStore("sightings");
+
+	sightings.getAll().onsuccess = function(event) {
+		callback(event.target.result);
+	};
+}
+
 function getSightingYears(callback) {
 	var transaction = ovniDb.transaction(["sightings"], "readonly");
 
