@@ -162,17 +162,19 @@ function getSightingsCategoriesGetter(categorySet) {
 	};
 }
 
-function getSightingCountInYear(year, callback, transaction) {
-	var yearIndex = transaction.objectStore("sightings").index("year");
-	var request = yearIndex.getAllKeys(IDBKeyRange.only(year));
+function getSightingCountInCategoryGetter(categorySet) {
+	return function(category, callback, transaction) {
+		var categorySetIndex = transaction.objectStore("sightings").index(categorySet);
+		var request = categorySetIndex.getAllKeys(IDBKeyRange.only(category));
 
-	request.onsuccess = function(event) {
-		callback(event.target.result.length);
-	};
+		request.onsuccess = function(event) {
+			callback(event.target.result.length);
+		};
+	}
 }
 
-function getSightingCountByCategory(getCategories, getSightingCountInCategory, propertiesNames, callback) {
-	getCategories(function(categoriesList) {
+function getSightingCountByCategory(categorySet, propertiesNames, callback) {
+	getSightingsCategoriesGetter(categorySet)(function(categoriesList) {
 		var countByCategory = [];
 		var transaction = ovniDb.transaction(["sightings"], "readonly");
 
@@ -187,7 +189,12 @@ function getSightingCountByCategory(getCategories, getSightingCountInCategory, p
 			entry[propertiesNames.x] = categoriesList[i];
 
 			countByCategory.push(entry);
-			getSightingCountInCategory(categoriesList[i], get_category_callback(i), transaction);
+
+			getSightingCountInCategoryGetter(categorySet)(
+				categoriesList[i],
+				get_category_callback(i),
+				transaction
+			);
 		}
 
 		transaction.oncomplete = function(event) {
@@ -197,9 +204,8 @@ function getSightingCountByCategory(getCategories, getSightingCountInCategory, p
 }
 
 function getSightingCountByYear(callback) {
-	getSightingCountByCategory(getSightingsCategoriesGetter("year"),
-			getSightingCountInYear, {x: "year", y: "count"},
-								callback);
+	getSightingCountByCategory("year", {x: "year", y: "count"},
+							callback);
 }
 
 main();
