@@ -139,12 +139,12 @@ function getAllSightings(callback) {
 	};
 }
 
-function getSightingsCategoriesGetter(categoryName) {
+function getSightingsCategoriesGetter(categorySet) {
 	return function(callback) {
 		var transaction = ovniDb.transaction(["sightings"], "readonly");
 
-		var categoryIndex = transaction.objectStore("sightings").index(categoryName);
-		var cursorRequest = categoryIndex.openKeyCursor(null, "nextunique");
+		var categorySetIndex = transaction.objectStore("sightings").index(categorySet);
+		var cursorRequest = categorySetIndex.openKeyCursor(null, "nextunique");
 
 		var categoriesList = [];
 
