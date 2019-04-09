@@ -8,7 +8,7 @@ function notifyError(str) {
 	alert(str);
 }
 
-function main() {
+function initializeDb() {
 	console.log("[DB] Starting initialization...");
 
 	if (!window.indexedDB) {
@@ -130,78 +130,89 @@ function addSighting(sighting) {
 	transaction.objectStore("sightings").add(sighting);
 }
 
-function getSightingYears(callback) {
+function getAllSightings(callback) {
 	var transaction = ovniDb.transaction(["sightings"], "readonly");
+	var sightings = transaction.objectStore("sightings");
 
-	var yearIndex = transaction.objectStore("sightings").index("year");
-	var cursorRequest = yearIndex.openKeyCursor(null, "nextunique");
-
-	var yearList = [];
-
-	cursorRequest.onsuccess = function(event) {
-		var cursor = event.target.result;
-
-		if (!cursor) {
-			callback(yearList);
-			return;
-		}
-
-		yearList.push(cursor.key);
-		cursor.continue();
+	sightings.getAll().onsuccess = function(event) {
+		callback(event.target.result);
 	};
 }
 
-function getSightingShapes(callback) {
-	var transaction = ovniDb.transaction(["sightings"], "readonly");
-
-	var shapeIndex = transaction.objectStore("sightings").index("shape");
-	var cursorRequest = shapeIndex.openKeyCursor(null, "nextunique");
-
-	var shapeList = [];
-
-	cursorRequest.onsuccess = function(event) {
-		var cursor = event.target.result;
-
-		if (!cursor) {
-			callback(shapeList);
-			return;
-		}
-
-		shapeList.push(cursor.key);
-		cursor.continue();
-	};
-}
-
-function getSightingCountInYear(year, callback, transaction) {
-	var yearIndex = transaction.objectStore("sightings").index("year");
-	var request = yearIndex.getAllKeys(IDBKeyRange.only(year));
-
-	request.onsuccess = function(event) {
-		callback(event.target.result.length);
-	};
-}
-
-function getSightingCountByYear(callback) {
-	getSightingYears(function(yearsList) {
-		var countByYear = [];
+function getSightingsCategoriesGetter(categorySet) {
+	return function(callback) {
 		var transaction = ovniDb.transaction(["sightings"], "readonly");
 
-		for (var i = 0; i < yearsList.length; i++) {
-			countByYear.push({year: yearsList[i], count: 0});
+		var categorySetIndex = transaction.objectStore("sightings").index(categorySet);
+		var cursorRequest = categorySetIndex.openKeyCursor(null, "nextunique");
 
-			var get_year_callback = function(i) {
-				return function(count) {
-					countByYear[i].count = count;
-				};
+		var categoriesList = [];
+
+		cursorRequest.onsuccess = function(event) {
+			var cursor = event.target.result;
+
+			if (!cursor) {
+				callback(categoriesList);
+				return;
+			}
+
+			categoriesList.push(cursor.key);
+			cursor.continue();
+		};
+	};
+}
+
+function getSightingCountInCategoryGetter(categorySet) {
+	return function(category, callback, transaction) {
+		var categorySetIndex = transaction.objectStore("sightings").index(categorySet);
+		var request = categorySetIndex.getAllKeys(IDBKeyRange.only(category));
+
+		request.onsuccess = function(event) {
+			callback(event.target.result.length);
+		};
+	}
+}
+
+function getSightingCountByCategory(categorySet, propertiesNames, callback) {
+	getSightingsCategoriesGetter(categorySet)(function(categoriesList) {
+		var countByCategory = [];
+		var transaction = ovniDb.transaction(["sightings"], "readonly");
+
+		var get_category_callback = function(i) {
+			return function(count) {
+				countByCategory[i][propertiesNames.y] = count;
 			};
+		};
 
-			getSightingCountInYear(yearsList[i], get_year_callback(i), transaction);
+		for (var i = 0; i < categoriesList.length; i++) {
+			var entry = {};
+			entry[propertiesNames.x] = categoriesList[i];
+
+			countByCategory.push(entry);
+
+			getSightingCountInCategoryGetter(categorySet)(
+				categoriesList[i],
+				get_category_callback(i),
+				transaction
+			);
 		}
 
 		transaction.oncomplete = function(event) {
-			callback(countByYear);
+			callback(countByCategory);
 		};
 	});
 }
 
-main();
+function getSightingCountByYear(callback) {
+	getSightingCountByCategory("year", {x: "year", y: "count"},
+							callback);
+}
+
+function getSightingCountByShape(callback) {
+	getSightingCountByCategory("shape", {x: "label", y: "y"},
+							callback);
+}
+
+
+
+initializeDb();
