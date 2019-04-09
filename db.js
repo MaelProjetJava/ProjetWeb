@@ -8,7 +8,7 @@ function notifyError(str) {
 	alert(str);
 }
 
-function main() {
+function initializeDb() {
 	console.log("[DB] Starting initialization...");
 
 	if (!window.indexedDB) {
@@ -215,4 +215,4 @@ function getSightingCountByShape(callback) {
 
 
 
-main();
+initializeDb();
