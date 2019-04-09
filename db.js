@@ -208,4 +208,11 @@ function getSightingCountByYear(callback) {
 							callback);
 }
 
+function getSightingCountByShape(callback) {
+	getSightingCountByCategory("shape", {x: "label", y: "y"},
+							callback);
+}
+
+
+
 main();
