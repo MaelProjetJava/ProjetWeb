@@ -190,27 +190,34 @@ function getSightingCountInYear(year, callback, transaction) {
 	};
 }
 
-function getSightingCountByYear(callback) {
-	getSightingYears(function(yearsList) {
-		var countByYear = [];
+function getSightingCountByCategory(getCategories, getSightingCountInCategory, propertiesNames, callback) {
+	getCategories(function(categoriesList) {
+		var countByCategory = [];
 		var transaction = ovniDb.transaction(["sightings"], "readonly");
 
-		for (var i = 0; i < yearsList.length; i++) {
-			countByYear.push({year: yearsList[i], count: 0});
-
-			var get_year_callback = function(i) {
-				return function(count) {
-					countByYear[i].count = count;
-				};
+		var get_category_callback = function(i) {
+			return function(count) {
+				countByCategory[i][propertiesNames.y] = count;
 			};
+		};
 
-			getSightingCountInYear(yearsList[i], get_year_callback(i), transaction);
+		for (var i = 0; i < categoriesList.length; i++) {
+			var entry = {};
+			entry[propertiesNames.x] = categoriesList[i];
+
+			countByCategory.push(entry);
+			getSightingCountInCategory(categoriesList[i], get_category_callback(i), transaction);
 		}
 
 		transaction.oncomplete = function(event) {
-			callback(countByYear);
+			callback(countByCategory);
 		};
 	});
+}
+
+function getSightingCountByYear(callback) {
+	getSightingCountByCategory(getSightingYears, getSightingCountInYear,
+					{x: "year", y: "count"}, callback);
 }
 
 main();
