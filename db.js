@@ -139,45 +139,26 @@ function getAllSightings(callback) {
 	};
 }
 
-function getSightingYears(callback) {
-	var transaction = ovniDb.transaction(["sightings"], "readonly");
+function getSightingsCategoriesGetter(categoryName) {
+	return function(callback) {
+		var transaction = ovniDb.transaction(["sightings"], "readonly");
 
-	var yearIndex = transaction.objectStore("sightings").index("year");
-	var cursorRequest = yearIndex.openKeyCursor(null, "nextunique");
+		var categoryIndex = transaction.objectStore("sightings").index(categoryName);
+		var cursorRequest = categoryIndex.openKeyCursor(null, "nextunique");
 
-	var yearList = [];
+		var categoriesList = [];
 
-	cursorRequest.onsuccess = function(event) {
-		var cursor = event.target.result;
+		cursorRequest.onsuccess = function(event) {
+			var cursor = event.target.result;
 
-		if (!cursor) {
-			callback(yearList);
-			return;
-		}
+			if (!cursor) {
+				callback(categoriesList);
+				return;
+			}
 
-		yearList.push(cursor.key);
-		cursor.continue();
-	};
-}
-
-function getSightingShapes(callback) {
-	var transaction = ovniDb.transaction(["sightings"], "readonly");
-
-	var shapeIndex = transaction.objectStore("sightings").index("shape");
-	var cursorRequest = shapeIndex.openKeyCursor(null, "nextunique");
-
-	var shapeList = [];
-
-	cursorRequest.onsuccess = function(event) {
-		var cursor = event.target.result;
-
-		if (!cursor) {
-			callback(shapeList);
-			return;
-		}
-
-		shapeList.push(cursor.key);
-		cursor.continue();
+			categoriesList.push(cursor.key);
+			cursor.continue();
+		};
 	};
 }
 
@@ -216,8 +197,9 @@ function getSightingCountByCategory(getCategories, getSightingCountInCategory, p
 }
 
 function getSightingCountByYear(callback) {
-	getSightingCountByCategory(getSightingYears, getSightingCountInYear,
-					{x: "year", y: "count"}, callback);
+	getSightingCountByCategory(getSightingsCategoriesGetter("year"),
+			getSightingCountInYear, {x: "year", y: "count"},
+								callback);
 }
 
 main();
