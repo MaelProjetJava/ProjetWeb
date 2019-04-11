@@ -49,6 +49,7 @@ function createDatabaseStructure(event) {
 
 	sightingsStore.createIndex("year", "year");
 	sightingsStore.createIndex("shape", "shape");
+	sightingsStore.createIndex("month", "month");
 
 	dbLoadInitialDataset = true;
 	console.log("[DB] Database structure created.");
@@ -205,12 +206,40 @@ function getSightingCountByCategory(categorySet, propertiesNames, callback) {
 
 function getSightingCountByYear(callback) {
 	getSightingCountByCategory("year", {x: "year", y: "count"},
-							callback);
+								callback);
 }
 
 function getSightingCountByShape(callback) {
 	getSightingCountByCategory("shape", {x: "label", y: "y"},
-							callback);
+								callback);
+}
+
+function getSightingCountByMonth(callback) {
+	var propertiesNames = {x: "mois", y: "count"};
+
+	var callback_wrapper = function(result) {
+		console.log(result);
+		for (var i = 0; i < 12; i++) {
+			var entry;
+			if (i < result.length) {
+				entry = result[i];
+			} else {
+				entry = {};
+				entry[propertiesNames.x] = 13;
+			}
+
+			if (entry[propertiesNames.x] != i + 1) {
+				var new_entry = {count: 0};
+				new_entry[propertiesNames.x] = i + 1;
+				result.splice(i, 0, new_entry);
+			}
+		}
+
+		callback(result);
+	};
+
+	getSightingCountByCategory("month", propertiesNames,
+							callback_wrapper);
 }
 
 
