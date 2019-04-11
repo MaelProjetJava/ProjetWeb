@@ -1,6 +1,7 @@
 
-var ovniDb;
+var ovniDb = null;
 var dbReady = false;
+var dbScheduledQueries = [];
 var dbLoadInitialDataset = false;
 
 function notifyError(str) {
@@ -28,10 +29,12 @@ function initializeDb() {
 		ovniDb = event.target.result;
 		ovniDb.onerror = handleDbError;
 
-		if (dbLoadInitialDataset)
+		if (dbLoadInitialDataset) {
 			importInitialDataset();
-		else
+		} else {
 			dbReady = true;
+			processScheduledQueries();
+		}
 	};
 	openRequest.onerror  = function(event) {
 		console.log("[DB] Error: unable to open database!");
@@ -60,6 +63,7 @@ function handleDbError(event) {
 		console.log("[DB] Error: unable to record initial dataset!");
 		notifyError("Impossible de charger les données initiales!");
 		dbReady = true;
+		processScheduledQueries();
 		return;
 	}
 
@@ -116,6 +120,7 @@ function addInitialDatasetSightings(sightingsList) {
 		console.log("[DB] Initial dataset successfully recorded.");
 		dbReady = true;
 		console.log("[DB] Initialization done.");
+		processScheduledQueries();
 	};
 
 	for (var i = 0; i < sightingsList.length; i++) {
@@ -124,14 +129,41 @@ function addInitialDatasetSightings(sightingsList) {
 	}
 }
 
+function processScheduledQueries() {
+	console.log("[DB] Processing pre-initialization scheduled queries...");
+
+	for (var i = 0; i < dbScheduledQueries.length; i++)
+		dbScheduledQueries[i]();
+
+	console.log("[DB] Pre-initialization scheduled queries processed.");
+}
+
 function addSighting(sighting) {
 	console.log("[DB] Adding record");
+
+	if (ovniDb == null) {
+		console.log("[DB] addSighting(): Database not initialized. Query scheduled.");
+		dbScheduledQueries.push(function () {
+			addSighting(sighting);
+		});
+
+		return;
+	}
 
 	var transaction = ovniDb.transaction(["sightings"], "readwrite");
 	transaction.objectStore("sightings").add(sighting);
 }
 
 function getAllSightings(callback) {
+	if (ovniDb == null) {
+		console.log("[DB] getAllSightings(): Database not initialized. Query scheduled.");
+		dbScheduledQueries.push(function () {
+			getAllSightings(callback);
+		});
+
+		return;
+	}
+
 	var transaction = ovniDb.transaction(["sightings"], "readonly");
 	var sightings = transaction.objectStore("sightings");
 
@@ -175,6 +207,16 @@ function getSightingCountInCategoryGetter(categorySet) {
 }
 
 function getSightingCountByCategory(categorySet, propertiesNames, callback) {
+	if (ovniDb == null) {
+		console.log("[DB] getSightingCountByCategory(): Database not initialized. Query scheduled.");
+		dbScheduledQueries.push(function () {
+			getSightingCountByCategory(categorySet, propertiesNames,
+								callback);
+		});
+
+		return;
+	}
+
 	getSightingsCategoriesGetter(categorySet)(function(categoriesList) {
 		var countByCategory = [];
 		var transaction = ovniDb.transaction(["sightings"], "readonly");
