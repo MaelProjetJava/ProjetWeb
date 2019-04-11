@@ -19,7 +19,9 @@
 
 <script src="db.js"></script>
 
-
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+	<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+<script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster-src.js"></script>
 </head>
 <body>
 
@@ -163,7 +165,7 @@
 </div>
 		
 
- <script >var mymap = L.map('mapid').setView([51.505, -0.09], 13);
+ <script >var mymap = L.map('mapid',{renderer:L.canvas()}).setView([51.505, -0.09], 13);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -257,22 +259,25 @@ function supprimer(){
 
 
 function ajouterLesPoints(pts){
+
+var markers = new L.MarkerClusterGroup();
 	
 	for (var i = 0;  i<pts.length ;i++ ) {
 		
 		var lat=pts[i].latitude;
 		var lng=pts[i].longitude;
+		markers.addLayer(L.marker([lat,lng]));
 
-		mar=L.marker([lat,lng]).addTo(mymap);
 
    //console.log(mar);
-   mar.bindPopup("<button onClick=\"afficher("+lat+","+lng+")\">  Modifier  </button>  <button onClick=\"supprimer()\">  Supprimer  </button>");
+   //mar.bindPopup("<button onClick=\"afficher("+lat+","+lng+")\">  Modifier  </button>  <button onClick=\"supprimer()\">  Supprimer  </button>");
 
 		
 		
 
 	}
-	console.log("oj");
+	
+	mymap.addLayer(markers);
 
 
 	
