@@ -10,10 +10,16 @@
 
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 		<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
-   integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
-   crossorigin=""></script>
-   <link rel="stylesheet" href="test.css">
-   <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+   			integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+   			crossorigin=""></script>
+   <link rel="stylesheet" href="web.css">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+
+<script src="db.js"></script>
+
+
 </head>
 <body>
 
@@ -48,15 +54,15 @@
 
 				<div class="col-md-10" >
 					<div class="card card-body">
-						<div class="card card-body" id="test">
+						<div class="card card-body" id="onglet">
 							<div class="row" >
 							
 
-								<div  class="col-md-4 test"> <span id="titre1" >MAP </span></div>
+								<div  class="col-md-4 onglet"> <span id="titre1" >MAP </span></div>
 
-								<div class="col-md-4 test"> <span id="titre2" > STATS </span> </div>
+								<div class="col-md-4 onglet"> <span id="titre2" > STATS </span> </div>
 
-								<div class="col-md-4 test" > <span id="titre3" > - - - - </span> </div>
+								<div class="col-md-4 onglet" > <span id="titre3" > - - - - </span> </div>
 								
 							</div>
 				
@@ -79,13 +85,13 @@
 								 		<div class="form-row">
 								 			<div class="form-group col-md-6">
 												     <label for="date">Date d'apparition</label>
-												    <input class="form-control" type="text" id="date" name="date">
+												    <input class="form-control" type="date" id="date" name="date">
 											
 											</div>
 											<div class="form-group col-md-6">
 												
 											        <label for="time">Heure d'apparition</label>
-											        <input class="form-control" type="text" id="time" name="time">
+											        <input class="form-control" type="time" id="time" name="time">
 											    
 											</div>
 										</div>
@@ -99,7 +105,7 @@
 										    <div class="form-group col-md-6">
 											   
 											        <label for="duration">Durée d'apparition</label>
-											        <input  class="form-control" type="text" id="duration" name="duration">
+											        <input  class="form-control" type="time" id="duration" name="duration" step="2">
 											   
 											</div>
 										</div>
@@ -112,7 +118,7 @@
 											       <br/>
 											    <div class="form-row">    
 													<div class="form-group col-md-12">
-														<button type="submit" class="btn btn-primary"   >Ajouter/Modifier</button>
+														<button type="submit" class="btn btn-primary"   >Modifier</button>
 													</div>
 												</div>
 											    
@@ -123,11 +129,13 @@
 											        <textarea   class="form-control" id="comments" name="comments"  rows="5" cols="33"> </textarea>
 											</div>
 										
-
 											    
 										</div>
+
+										
 									</div>
 								</form>
+								<button id="test" >ajout des points </button>
 													
 							</div>
 
@@ -186,25 +194,40 @@ $(document).ready(function(){
 
 
 	});
+        $('#data').submit(function(event) {
+        	event.preventDefault();
+        	/*console.log("date=" +$('#date').val());
+        	console.log("heure=" +$('#time').val());
+        	console.log("duree=" +$('#duration').val());*/
 
 
+        })
+
+
+$("#test").click(function(){
+	
+	getAllSightings(ajouterLesPoints);
+
+});
 
 	
 });
  
-var mar=new Array();
+//var mar=new Array();
 
 function ajoutpoint(e) 
 {
+	//pensée a le mettre dans la base de données 
 	
 	var lat=e.latlng.lat;
 	var lng=e.latlng.lng;
 
 
-   mar.push(L.marker([lat,lng]).addTo(mymap));
+   mar=L.marker([lat,lng]).addTo(mymap);
 
-   console.log(mar);
+   //console.log(mar);
    mar.bindPopup("<button onClick=\"afficher("+lat+","+lng+")\">  Modifier  </button>  <button onClick=\"supprimer()\">  Supprimer  </button>");
+
 
 
    
@@ -212,20 +235,51 @@ function ajoutpoint(e)
 
 	mymap.on('dblclick', ajoutpoint);
 
+
+
+
 function afficher(lat,lng){
-  //var ovni=
-  $( "#date").val("");
-  $( "#time").val(lat);
-  $( "#area").val(lng);
-  $( "#shape").val("");
-  $( "#duration").val("");
-  $( "#comments").val("");
+  //recuperer les données du point grâce a la base de données
+  //var ovni = database.(lat,lng);
+  $( "#date").val();
+  $( "#time").val();
+  $( "#area").val();
+  $( "#shape").val();
+  $( "#duration").val();
+  $( "#comments").val();
 }
 
 function supprimer(){
 
 	mymap.removeLayer(mar);      
 }
+
+
+
+function ajouterLesPoints(pts){
+	
+	for (var i = 0;  i<pts.length ;i++ ) {
+		
+		var lat=pts[i].latitude;
+		var lng=pts[i].longitude;
+
+		mar=L.marker([lat,lng]).addTo(mymap);
+
+   //console.log(mar);
+   mar.bindPopup("<button onClick=\"afficher("+lat+","+lng+")\">  Modifier  </button>  <button onClick=\"supprimer()\">  Supprimer  </button>");
+
+		
+		
+
+	}
+	console.log("oj");
+
+
+	
+}
+
+
+
 
 </script>
 
