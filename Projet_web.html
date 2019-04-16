@@ -22,6 +22,13 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
 	<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
 <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster-src.js"></script>
+
+
+
+<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
+<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
+
+
 </head>
 <body>
 
@@ -165,11 +172,21 @@
 </div>
 		
 
- <script >var mymap = L.map('mapid',{renderer:L.canvas()}).setView([51.505, -0.09], 13);
+ <script >var mymap = L.map('mapid', {
+    fullscreenControl: true}).setView([51.505, -0.09], 13);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+var vue = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(mymap);
+});
+vue.addTo(mymap);
+
+
+var googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
+    maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3']
+});
+
+
 
 $("#stat").hide();
 $(document).ready(function(){
@@ -240,9 +257,12 @@ function ajoutpoint(e)
 
 
 
-function afficher(lat,lng){
+function afficher(id){
+
+	console.log(id);
+
   //recuperer les données du point grâce a la base de données
-  //var ovni = database.(lat,lng);
+  //var ovni = database.(id);
   $( "#date").val();
   $( "#time").val();
   $( "#area").val();
@@ -266,11 +286,12 @@ var markers = new L.MarkerClusterGroup();
 		
 		var lat=pts[i].latitude;
 		var lng=pts[i].longitude;
-		markers.addLayer(L.marker([lat,lng]));
+		var id =pts[i].id;
+		mar  =L.marker([lat,lng]);
+		mar.bindPopup("<button onClick=\"afficher("+id+")\">  Modifier  </button>  <button onClick=\"supprimer()\">  Supprimer  </button>");
+		markers.addLayer(mar);
 
-
-   //console.log(mar);
-   //mar.bindPopup("<button onClick=\"afficher("+lat+","+lng+")\">  Modifier  </button>  <button onClick=\"supprimer()\">  Supprimer  </button>");
+   		
 
 		
 		
