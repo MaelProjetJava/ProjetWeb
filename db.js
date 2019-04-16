@@ -138,20 +138,27 @@ function processScheduledQueries() {
 	console.log("[DB] Pre-initialization scheduled queries processed.");
 }
 
-function addSighting(sighting) {
+function addSighting(sighting, callback) {
 	console.log("[DB] Adding record");
 
 	if (ovniDb == null) {
 		console.log("[DB] addSighting(): Database not initialized. Query scheduled.");
 		dbScheduledQueries.push(function () {
-			addSighting(sighting);
+			addSighting(sighting, callback);
 		});
 
 		return;
 	}
 
 	var transaction = ovniDb.transaction(["sightings"], "readwrite");
-	transaction.objectStore("sightings").add(sighting);
+	var request = transaction.objectStore("sightings").add(sighting);
+
+	request.onsuccess = function(event) {
+		if (callback) {
+			console.log("[DB] calling insert callback");
+			callback(event.target.result);
+		}
+	};
 }
 
 function getAllSightings(callback) {
