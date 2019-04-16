@@ -201,6 +201,29 @@ function getSighting(id, callback) {
 	};
 }
 
+function updateSighting(sighting, callback) {
+	console.log("[DB] Updating record");
+
+	if (ovniDb == null) {
+		console.log("[DB] updateSighting(): Database not initialized. Query scheduled.");
+		dbScheduledQueries.push(function () {
+			updateSighting(sighting, callback);
+		});
+
+		return;
+	}
+
+	var transaction = ovniDb.transaction(["sightings"], "readwrite");
+	var sightings = transaction.objectStore("sightings");
+
+	sightings.put(sighting).onsuccess = function(event) {
+		if (callback) {
+			console.log("[DB] calling update callback");
+			callback();
+		}
+	};
+}
+
 function getSightingsCategoriesGetter(categorySet) {
 	return function(callback) {
 		var transaction = ovniDb.transaction(["sightings"], "readonly");
