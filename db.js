@@ -339,3 +339,21 @@ function getSightingCountByMonth(callback) {
 
 
 initializeDb();
+
+/*getSighting(1, function(result) {
+	console.log(result);
+	result.second = 2701;
+	updateSighting(result, function() {
+		console.log("It's done!");
+	});
+});*/
+
+addSighting({
+latitude: 0,
+longitude: 0
+}, function(id) {
+	console.log("New id: " + id);
+	getSighting(id, function(sighting) {
+		console.log(sighting);
+	});
+});
