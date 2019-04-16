@@ -172,6 +172,24 @@ function getAllSightings(callback) {
 	};
 }
 
+function getSighting(id, callback) {
+	if (ovniDb == null) {
+		console.log("[DB] getSighting(): Database not initialized. Query scheduled.");
+		dbScheduledQueries.push(function () {
+			getSighting(id, callback);
+		});
+
+		return;
+	}
+
+	var transaction = ovniDb.transaction(["sightings"], "readonly");
+	var sightings = transaction.objectStore("sightings");
+
+	sightings.get(id).onsuccess = function(event) {
+		callback(event.target.result);
+	};
+}
+
 function getSightingsCategoriesGetter(categorySet) {
 	return function(callback) {
 		var transaction = ovniDb.transaction(["sightings"], "readonly");
