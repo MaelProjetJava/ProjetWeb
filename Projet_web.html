@@ -186,6 +186,8 @@ var googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z=
     subdomains:['mt0','mt1','mt2','mt3']
 });
 
+var markers = new L.MarkerClusterGroup();
+
 
 
 $("#stat").hide();
@@ -240,12 +242,16 @@ function ajoutpoint(e)
 	
 	var lat=e.latlng.lat;
 	var lng=e.latlng.lng;
-
+	var id=0;
 
    mar=L.marker([lat,lng]).addTo(mymap);
 
+   //var point = {latitude:lat,longitude:lng};
+   //addSighting(point,function(id){ 
+   mar.bindPopup("<button onClick=\"getSighting("+id+",afficher)\">  Modifier  </button>  <button onClick=\"supprimer()\">  Supprimer  </button>");//});
+	markers.addLayer(mar);
    //console.log(mar);
-   mar.bindPopup("<button onClick=\"afficher("+lat+","+lng+")\">  Modifier  </button>  <button onClick=\"supprimer()\">  Supprimer  </button>");
+ 
 
 
 
@@ -257,18 +263,21 @@ function ajoutpoint(e)
 
 
 
-function afficher(id){
+function afficher(ovni){
 
-	console.log(id);
+	console.log(ovni);
+
+
 
   //recuperer les données du point grâce a la base de données
-  //var ovni = database.(id);
-  $( "#date").val();
-  $( "#time").val();
-  $( "#area").val();
-  $( "#shape").val();
-  $( "#duration").val();
-  $( "#comments").val();
+  let ddd = ovni.year+"-0"+ovni.month+"-"+ovni.day;
+  console.log(ddd);
+  $( "#date").val(ddd);
+  $( "#time").val(ovni.hour+":0"+ovni.minute);
+  $( "#area").val(ovni.city);
+  $( "#shape").val(ovni.shape);
+  $( "#duration").val(ovni.second);
+  $( "#comments").val(ovni.comments);
 }
 
 function supprimer(){
@@ -280,7 +289,7 @@ function supprimer(){
 
 function ajouterLesPoints(pts){
 
-var markers = new L.MarkerClusterGroup();
+
 	
 	for (var i = 0;  i<pts.length ;i++ ) {
 		
@@ -288,7 +297,7 @@ var markers = new L.MarkerClusterGroup();
 		var lng=pts[i].longitude;
 		var id =pts[i].id;
 		mar  =L.marker([lat,lng]);
-		mar.bindPopup("<button onClick=\"afficher("+id+")\">  Modifier  </button>  <button onClick=\"supprimer()\">  Supprimer  </button>");
+		mar.bindPopup("<button onClick=\"getSighting("+id+",afficher)\">  Modifier  </button>  <button onClick=\"supprimer()\">  Supprimer  </button>");
 		markers.addLayer(mar);
 
    		
