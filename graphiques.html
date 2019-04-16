@@ -17,7 +17,8 @@ var chart = new CanvasJS.Chart("chartContainerPie", {
 		type: "pie",
 		startAngle: 240,
 		yValueFormatString: "##0\"\"",
-		indexLabel: "{label}",
+		indexLabel: "{label} - #percent%",
+		legendText: "{label}",
 		dataPoints: result
 	}]
 });
