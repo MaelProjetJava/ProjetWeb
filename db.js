@@ -155,6 +155,8 @@ function addSighting(sighting) {
 }
 
 function getAllSightings(callback) {
+	console.log("[DB] Retrieving all sightings");
+
 	if (ovniDb == null) {
 		console.log("[DB] getAllSightings(): Database not initialized. Query scheduled.");
 		dbScheduledQueries.push(function () {
@@ -173,6 +175,8 @@ function getAllSightings(callback) {
 }
 
 function getSighting(id, callback) {
+	console.log("[DB] Retrieving sighting");
+
 	if (ovniDb == null) {
 		console.log("[DB] getSighting(): Database not initialized. Query scheduled.");
 		dbScheduledQueries.push(function () {
