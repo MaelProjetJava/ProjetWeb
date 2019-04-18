@@ -277,11 +277,23 @@ function ajoutpoint(e)
 	var lng=e.latlng.lng;
 	var id=0;
 
-   mar=L.marker([lat,lng]).addTo(mymap);
+   mar=L.marker([lat,lng]).addTo(mymap).on('popupopen', function () {
+    					var mark = this;
+    					$(".marker-delete-button").click (function () {
+        				mymap.removeLayer(mark);
+        					$( "#date").val("");
+				  			$( "#time").val("");
+							$( "#area").val("");
+							$( "#shape").val("");
+							$( "#duration").val("");
+							$( "#comments").val("");
+        				
+    });
+   		});
 
    var point = {latitude:lat,longitude:lng};
    addSighting(point,function(id){ 
-   mar.bindPopup("<button onClick=\"getSighting("+id+",afficher)\">  Modifier  </button>  <button onClick=\"supprimer()\">  Supprimer  </button>");});
+   mar.bindPopup("<button onClick=\"getSighting("+id+",afficher)\">  Modifier   </button>  <button class='marker-delete-button'> supprimer </button>");});
 markers.addLayer(mar);
    console.log(mar);
  
@@ -316,11 +328,6 @@ time.setUTCMinutes(ovni.minute)
   $( "#comments").val(ovni.comments);
 }
 
-function supprimer(){
-
-	mymap.removeLayer(marAsup);      
-}
-
 
 
 function ajouterLesPoints(pts){
@@ -332,12 +339,21 @@ function ajouterLesPoints(pts){
 		var lat=pts[i].latitude;
 		var lng=pts[i].longitude;
 		var id =pts[i].id;
-		mar  =L.marker([lat,lng]).on('click', function(e) {
-			marAsup=e.latlng
-   			console.log(marAsup);
-   			console.log(mar);
+		mar=L.marker([lat,lng]).on('popupopen', function () {
+    					var mark = this;
+    					$(".marker-delete-button").click (function () {
+        				mymap.removeLayer(mark);
+        					$( "#date").val("");
+				  			$( "#time").val("");
+							$( "#area").val("");
+							$( "#shape").val("");
+							$( "#duration").val("");
+							$( "#comments").val("");
+
+    });
    		});
-		mar.bindPopup("<button onClick=\"getSighting("+id+",afficher)\">  Modifier  </button>  <button onClick=\"supprimer()\">  Supprimer  </button>");
+		mar.bindPopup("<button onClick=\"getSighting("+id+",afficher)\">  Modifier  </button>  <button class='marker-delete-button'> supprimer </button>");
+
 		markers.addLayer(mar);
 
    		
