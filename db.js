@@ -312,7 +312,6 @@ function getSightingCountByMonth(callback) {
 	var propertiesNames = {x: "mois", y: "count"};
 
 	var callback_wrapper = function(result) {
-		console.log(result);
 		for (var i = 0; i < 12; i++) {
 			var entry;
 			if (i < result.length) {
