@@ -1,3 +1,4 @@
+function graph(){
 getSightingCountByShape(function(result){
 var tab = [];
 var total = 0;
@@ -135,3 +136,4 @@ var chart = new CanvasJS.Chart("chartContainerColumn", options);
 var startTime = new Date();
 chart.render();
 });
+};

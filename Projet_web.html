@@ -198,6 +198,8 @@ var markers = new L.MarkerClusterGroup();
 
 let ovni="";
 
+let marAsup="";
+
 
 $("#stat").hide();
 $(document).ready(function(){
@@ -209,8 +211,10 @@ $(document).ready(function(){
 	});
     $("#titre2").click(function(){
 
+
 		$("#carte").hide();
 		$("#stat").show();
+		graph();
 
 	});
 
@@ -227,13 +231,22 @@ $(document).ready(function(){
         $('#data').submit(function(event) {
         	
         	event.preventDefault();
-        	console.log("date=" +$('#date').val());
-        	console.log("heure=" +$('#time').val());
-        	console.log("duree=" +$('#duration').val());
+        	//pour recuperer la date 
+            var date= $('#date')[0].valueAsDate;
+            ovni.year=date.getFullYear();
+            ovni.month=date.getMonth()+1;
+            ovni.day=date.getDate();
+            //pour recuperer l'heure
+            var time =  $( "#time")[0].valueAsDate;
+            ovni.hour=time.getUTCHours();
+            ovni.minute=time.getUTCMinutes();
+
+        	
+        	ovni.second=$('#duration').val();
   			ovni.city=$( "#area").val();
   			ovni.shape=$( "#shape").val();
 			ovni.comments=$( "#comments").val();
-			console.log(ovni);
+			//console.log(ovni);
 
 			updateSighting(ovni);
 			$( "#date").val("");
@@ -266,11 +279,11 @@ function ajoutpoint(e)
 
    mar=L.marker([lat,lng]).addTo(mymap);
 
-   //var point = {latitude:lat,longitude:lng};
-   //addSighting(point,function(id){ 
-   mar.bindPopup("<button onClick=\"getSighting("+id+",afficher)\">  Modifier  </button>  <button onClick=\"supprimer()\">  Supprimer  </button>");//});
-	markers.addLayer(mar);
-   //console.log(mar);
+   var point = {latitude:lat,longitude:lng};
+   addSighting(point,function(id){ 
+   mar.bindPopup("<button onClick=\"getSighting("+id+",afficher)\">  Modifier  </button>  <button onClick=\"supprimer()\">  Supprimer  </button>");});
+markers.addLayer(mar);
+   console.log(mar);
  
 
 
@@ -289,10 +302,14 @@ function afficher(data){
 
 
 var date = new Date(ovni.year,ovni.month,ovni.day)
+var time = new Date(0);
+time.setUTCHours(ovni.hour);
+time.setUTCMinutes(ovni.minute)
+
   //recuperer les données du point grâce a la base de données
-  console.log(date);
+  //console.log(date);
   $( "#date")[0].valueAsDate=date;
-  $( "#time").val(ovni.hour+":0"+ovni.minute);
+  $( "#time")[0].valueAsDate=time;
   $( "#area").val(ovni.city);
   $( "#shape").val(ovni.shape);
   $( "#duration").val(ovni.second);
@@ -301,7 +318,7 @@ var date = new Date(ovni.year,ovni.month,ovni.day)
 
 function supprimer(){
 
-	mymap.removeLayer(mar);      
+	mymap.removeLayer(marAsup);      
 }
 
 
@@ -315,7 +332,11 @@ function ajouterLesPoints(pts){
 		var lat=pts[i].latitude;
 		var lng=pts[i].longitude;
 		var id =pts[i].id;
-		mar  =L.marker([lat,lng]);
+		mar  =L.marker([lat,lng]).on('click', function(e) {
+			marAsup=e.latlng
+   			console.log(marAsup);
+   			console.log(mar);
+   		});
 		mar.bindPopup("<button onClick=\"getSighting("+id+",afficher)\">  Modifier  </button>  <button onClick=\"supprimer()\">  Supprimer  </button>");
 		markers.addLayer(mar);
 
