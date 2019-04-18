@@ -17,6 +17,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 
+
 <script src="db.js"></script>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
@@ -28,6 +29,8 @@
 <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
 <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
 
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script src="graphique.js"></script>
 
 </head>
 <body>
@@ -36,7 +39,7 @@
 	<div class="row-md-4" >
 		<div class="card card-body">
 			<div class="col" style="text-align:center">
-				Titre 
+				Alien Finder 
 			</div>
 		</div>
 	
@@ -114,8 +117,7 @@
 										    <div class="form-group col-md-6">
 											   
 											        <label for="duration">Durée d'apparition</label>
-											        <input  class="form-control" type="time" id="duration" name="duration" step="2">
-											   
+											        <input  class="form-control" type="number" id="duration" name="duration" placeholder="En secondes">
 											</div>
 										</div>
 										<div class="form-row">
@@ -144,15 +146,22 @@
 										
 									</div>
 								</form>
-								<button id="test" >ajout des points </button>
 													
 							</div>
 
 						</div>
 						</div>
 
-						<div id="stat">
-								bonjour
+						<div class="row" id="stat">
+							<div class="col-md-12" >
+								<div id="chartContainerLine" style="height: 370px;"></div>
+							</div>
+							<div class="col-md-12" >
+								<div id="chartContainerColumn" style="height: 370px;  "></div>
+							</div>
+							<div class="col-md-12" >
+								<div id="chartContainerPie" style="height: 370px; "></div>
+							</div>
 						</div>
 
 					</div>
@@ -172,8 +181,7 @@
 </div>
 		
 
- <script >var mymap = L.map('mapid', {
-    fullscreenControl: true}).setView([51.505, -0.09], 13);
+ <script >var mymap = L.map('mapid', {fullscreenControl: true}).setView([51.505, -0.09], 13);
 
 var vue = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -188,6 +196,7 @@ var googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z=
 
 var markers = new L.MarkerClusterGroup();
 
+let ovni="";
 
 
 $("#stat").hide();
@@ -216,25 +225,36 @@ $(document).ready(function(){
 
 	});
         $('#data').submit(function(event) {
+        	
         	event.preventDefault();
-        	/*console.log("date=" +$('#date').val());
+        	console.log("date=" +$('#date').val());
         	console.log("heure=" +$('#time').val());
-        	console.log("duree=" +$('#duration').val());*/
+        	console.log("duree=" +$('#duration').val());
+  			ovni.city=$( "#area").val();
+  			ovni.shape=$( "#shape").val();
+			ovni.comments=$( "#comments").val();
+			console.log(ovni);
 
-
+			updateSighting(ovni);
+			$( "#date").val("");
+  			$( "#time").val("");
+			$( "#area").val("");
+			$( "#shape").val("");
+			$( "#duration").val("");
+			$( "#comments").val("");
         })
 
 
-$("#test").click(function(){
-	
-	getAllSightings(ajouterLesPoints);
 
-});
+	
+getAllSightings(ajouterLesPoints);
+
+
 
 	
 });
  
-//var mar=new Array();
+
 
 function ajoutpoint(e) 
 {
@@ -263,16 +283,15 @@ function ajoutpoint(e)
 
 
 
-function afficher(ovni){
-
+function afficher(data){
+	 ovni= data;
 	console.log(ovni);
 
 
-
+var date = new Date(ovni.year,ovni.month,ovni.day)
   //recuperer les données du point grâce a la base de données
-  let ddd = ovni.year+"-0"+ovni.month+"-"+ovni.day;
-  console.log(ddd);
-  $( "#date").val(ddd);
+  console.log(date);
+  $( "#date")[0].valueAsDate=date;
   $( "#time").val(ovni.hour+":0"+ovni.minute);
   $( "#area").val(ovni.city);
   $( "#shape").val(ovni.shape);
