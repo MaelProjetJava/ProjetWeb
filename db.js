@@ -53,6 +53,9 @@ function createDatabaseStructure(event) {
 	sightingsStore.createIndex("year", "year");
 	sightingsStore.createIndex("shape", "shape");
 	sightingsStore.createIndex("month", "month");
+	sightingsStore.createIndex("yearByYear", ["year", "year"]);
+	sightingsStore.createIndex("shapeByYear", ["shape", "year"]);
+	sightingsStore.createIndex("monthByYear", ["month", "year"]);
 
 	dbLoadInitialDataset = true;
 	console.log("[DB] Database structure created.");
@@ -248,9 +251,12 @@ function getSightingsCategoriesGetter(categorySet) {
 }
 
 function getSightingCountInCategoryGetter(categorySet) {
-	return function(category, callback, transaction) {
-		var categorySetIndex = transaction.objectStore("sightings").index(categorySet);
-		var request = categorySetIndex.getAllKeys(IDBKeyRange.only(category));
+	return function(startYear, endYear, category, callback, transaction) {
+		var categorySetIndex = transaction.objectStore("sightings").index(
+													categorySet + "ByYear");
+
+		var request = categorySetIndex.getAllKeys(IDBKeyRange.bound([category,
+							startYear], [category, endYear], false, false));
 
 		request.onsuccess = function(event) {
 			callback(event.target.result.length);
@@ -258,16 +264,22 @@ function getSightingCountInCategoryGetter(categorySet) {
 	}
 }
 
-function getSightingCountByCategory(categorySet, propertiesNames, callback) {
+function getSightingCountByCategory(startYear, endYear, categorySet, propertiesNames, callback) {
 	if (ovniDb == null) {
 		console.log("[DB] getSightingCountByCategory(): Database not initialized. Query scheduled.");
 		dbScheduledQueries.push(function () {
-			getSightingCountByCategory(categorySet, propertiesNames,
+			getSightingCountByCategory(startYear, endYear, categorySet, propertiesNames,
 								callback);
 		});
 
 		return;
 	}
+
+	if (startYear == null)
+		startYear = 0;
+
+	if (endYear == null)
+		endYear = 9999; /* I don't think the civilization will go thus far... */
 
 	getSightingsCategoriesGetter(categorySet)(function(categoriesList) {
 		var countByCategory = [];
@@ -286,6 +298,8 @@ function getSightingCountByCategory(categorySet, propertiesNames, callback) {
 			countByCategory.push(entry);
 
 			getSightingCountInCategoryGetter(categorySet)(
+				startYear,
+				endYear,
 				categoriesList[i],
 				get_category_callback(i),
 				transaction
@@ -298,17 +312,17 @@ function getSightingCountByCategory(categorySet, propertiesNames, callback) {
 	});
 }
 
-function getSightingCountByYear(callback) {
-	getSightingCountByCategory("year", {x: "year", y: "count"},
+function getSightingCountByYear(startYear, endYear, callback) {
+	getSightingCountByCategory(startYear, endYear, "year", {x: "year", y: "count"},
 								callback);
 }
 
-function getSightingCountByShape(callback) {
-	getSightingCountByCategory("shape", {x: "label", y: "y"},
+function getSightingCountByShape(startYear, endYear, callback) {
+	getSightingCountByCategory(startYear, endYear, "shape", {x: "label", y: "y"},
 								callback);
 }
 
-function getSightingCountByMonth(callback) {
+function getSightingCountByMonth(startYear, endYear, callback) {
 	var propertiesNames = {x: "mois", y: "count"};
 
 	var callback_wrapper = function(result) {
@@ -331,7 +345,7 @@ function getSightingCountByMonth(callback) {
 		callback(result);
 	};
 
-	getSightingCountByCategory("month", propertiesNames,
+	getSightingCountByCategory(startYear, endYear, "month", propertiesNames,
 							callback_wrapper);
 }
 

@@ -1,5 +1,5 @@
 function graph(){
-getSightingCountByShape(function(result){
+getSightingCountByShape(null, null, function(result){
 var tab = [];
 var total = 0;
 for (var i = 0; i < result.length; i += 1)
@@ -25,7 +25,7 @@ chart.render();
 });
 
 
-getSightingCountByYear(function(result){
+getSightingCountByYear(null, null, function(result){
 
 var user = [
 {year: 1995, nb: 16},
@@ -100,7 +100,7 @@ chart.render();
 });
 
 
-getSightingCountByMonth(function(result){
+getSightingCountByMonth(null, null, function(result){
 var tabMois = ["Janvier", "Fevrier", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Decembre"];
 var data = [];
 var dataSeries = { type: "column" };
