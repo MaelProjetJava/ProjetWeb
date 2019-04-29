@@ -174,7 +174,7 @@ function addSighting(sighting, callback) {
 	};
 }
 
-function getAllSightings(callback) {
+function getAllSightings(callback, finalcallback) {
 	console.log("[DB] Retrieving all sightings");
 
 	if (ovniDb == null) {
@@ -189,8 +189,15 @@ function getAllSightings(callback) {
 	var transaction = ovniDb.transaction(["sightings"], "readonly");
 	var sightings = transaction.objectStore("sightings");
 
-	sightings.getAll().onsuccess = function(event) {
-		callback(event.target.result);
+	sightings.openCursor().onsuccess = function (event) {
+		var cursor = event.target.result;
+
+		if (cursor) {
+			callback(cursor.value);
+			cursor.continue();
+		} else if (finalcallback) {
+			finalcallback();
+		}
 	};
 }
 

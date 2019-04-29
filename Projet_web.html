@@ -260,7 +260,7 @@ $(document).ready(function(){
 
 
 	
-getAllSightings(ajouterLesPoints);
+getAllSightings(ajouterLesPoints, function() {mymap.addLayer(markers);});
 
 
 
@@ -330,43 +330,27 @@ time.setUTCMinutes(ovni.minute)
 
 
 
-function ajouterLesPoints(pts){
+function ajouterLesPoints(point){
+	var lat=point.latitude;
+	var lng=point.longitude;
+	var id =point.id;
 
+	mar=L.marker([lat,lng]).on('popupopen', function () {
+				var mark = this;
+				$(".marker-delete-button").click (function () {
+					mymap.removeLayer(mark);
+					$( "#date").val("");
+					$( "#time").val("");
+					$( "#area").val("");
+					$( "#shape").val("");
+					$( "#duration").val("");
+					$( "#comments").val("");
+				});
+	});
 
-	
-	for (var i = 0;  i<pts.length ;i++ ) {
-		
-		var lat=pts[i].latitude;
-		var lng=pts[i].longitude;
-		var id =pts[i].id;
-		mar=L.marker([lat,lng]).on('popupopen', function () {
-    					var mark = this;
-    					$(".marker-delete-button").click (function () {
-        				mymap.removeLayer(mark);
-        					$( "#date").val("");
-				  			$( "#time").val("");
-							$( "#area").val("");
-							$( "#shape").val("");
-							$( "#duration").val("");
-							$( "#comments").val("");
+	mar.bindPopup("<button onClick=\"getSighting("+id+",afficher)\">  Modifier  </button>  <button class='marker-delete-button'> supprimer </button>");
 
-    });
-   		});
-		mar.bindPopup("<button onClick=\"getSighting("+id+",afficher)\">  Modifier  </button>  <button class='marker-delete-button'> supprimer </button>");
-
-		markers.addLayer(mar);
-
-   		
-
-		
-		
-
-	}
-	
-	mymap.addLayer(markers);
-
-
-	
+	markers.addLayer(mar);
 }
 
 
