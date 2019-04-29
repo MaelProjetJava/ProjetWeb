@@ -174,6 +174,29 @@ function addSighting(sighting, callback) {
 	};
 }
 
+function deleteSighting(id, callback) {
+	console.log("[DB] Deleting record");
+
+	if (ovniDb == null) {
+		console.log("[DB] deleteSighting(): Database not initialized. Query scheduled.");
+		dbScheduledQueries.push(function () {
+			deleteSighting(id, callback);
+		});
+
+		return;
+	}
+
+	var transaction = ovniDb.transaction(["sightings"], "readwrite");
+	var request = transaction.objectStore("sightings").delete(id);
+
+	request.onsuccess = function(event) {
+		if (callback) {
+			console.log("[DB] Calling delete callback");
+			callback();
+		}
+	};
+}
+
 function getAllSightings(callback, finalcallback) {
 	console.log("[DB] Retrieving all sightings");
 
