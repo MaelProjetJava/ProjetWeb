@@ -115,6 +115,18 @@ function splitDatetimeField(sightingObj) {
 	delete sightingObj.datetime;
 }
 
+function addPredefinedSighting(objectStore, i, sightingsList) {
+	splitDatetimeField(sightingsList[i]);
+	var request = objectStore.add(sightingsList[i]);
+
+	request.onsuccess = function(event) {
+		if (++i >= sightingsList.length)
+			return;
+
+		addPredefinedSighting(objectStore, i, sightingsList);
+	};
+}
+
 function addInitialDatasetSightings(sightingsList) {
 	console.log("[DB] Recording initial dataset in database...");
 
@@ -126,10 +138,8 @@ function addInitialDatasetSightings(sightingsList) {
 		processScheduledQueries();
 	};
 
-	for (var i = 0; i < sightingsList.length; i++) {
-		splitDatetimeField(sightingsList[i]);
-		transaction.objectStore("sightings").add(sightingsList[i]);
-	}
+	var objectStore = transaction.objectStore("sightings");
+	addPredefinedSighting(objectStore, 0, sightingsList);
 }
 
 function processScheduledQueries() {
