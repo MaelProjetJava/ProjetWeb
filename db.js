@@ -240,7 +240,8 @@ function getSighting(id, callback) {
 	var sightings = transaction.objectStore("sightings");
 
 	sightings.get(id).onsuccess = function(event) {
-		callback(event.target.result);
+		if (event.target.result)
+			callback(event.target.result);
 	};
 }
 
