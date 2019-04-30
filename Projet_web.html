@@ -276,11 +276,31 @@ function ajoutpoint(e)
 	var lat=e.latlng.lat;
 	var lng=e.latlng.lng;
 	var id=0;
+	var idsup=0;
+	   var point = {latitude:lat,longitude:lng};
+
+   addSighting(point,function(id){ 
+  
+   	idsup=id;
+   mar.bindPopup("<button onClick=\"getSighting("+id+",afficher)\">  Modifier   </button>  <button class='marker-delete-button'> supprimer </button>");});
+markers.addLayer(mar);
+
+
+
+
+
+
 
    mar=L.marker([lat,lng]).addTo(mymap).on('popupopen', function () {
     					var mark = this;
+    					// c'est pour supprimer un point
+    					
     					$(".marker-delete-button").click (function () {
-        				mymap.removeLayer(mark);
+    	
+    					deleteSighting(idsup,function(){
+    						
+    						markers.removeLayer(mark);
+        					mymap.removeLayer(mark);
         					$( "#date").val("");
 				  			$( "#time").val("");
 							$( "#area").val("");
@@ -289,15 +309,10 @@ function ajoutpoint(e)
 							$( "#comments").val("");
         				
     });
-   		});
+    					  });
 
-   var point = {latitude:lat,longitude:lng};
-   addSighting(point,function(id){ 
-   mar.bindPopup("<button onClick=\"getSighting("+id+",afficher)\">  Modifier   </button>  <button class='marker-delete-button'> supprimer </button>");});
-markers.addLayer(mar);
-   console.log(mar);
- 
-
+    	});
+   	
 
 
    
@@ -337,7 +352,11 @@ function ajouterLesPoints(point){
 
 	mar=L.marker([lat,lng]).on('popupopen', function () {
 				var mark = this;
+				// c'est pour supprimer un point
 				$(".marker-delete-button").click (function () {
+					deleteSighting(id,function(){
+
+					markers.removeLayer(mark);
 					mymap.removeLayer(mark);
 					$( "#date").val("");
 					$( "#time").val("");
@@ -346,6 +365,7 @@ function ajouterLesPoints(point){
 					$( "#duration").val("");
 					$( "#comments").val("");
 				});
+					});
 	});
 
 	mar.bindPopup("<button onClick=\"getSighting("+id+",afficher)\">  Modifier  </button>  <button class='marker-delete-button'> supprimer </button>");
