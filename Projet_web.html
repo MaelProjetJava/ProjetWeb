@@ -188,21 +188,27 @@ var vue = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 });
 vue.addTo(mymap);
 
-
+// si on veut changer la vue de la map 
 var googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
     maxZoom: 20,
     subdomains:['mt0','mt1','mt2','mt3']
 });
+//googleHybrid.addTo(mymap);
+
+
+mymap.on('dblclick', ajoutpoint);
+
 
 var markers = new L.MarkerClusterGroup();
 
 let ovni="";
 
-let marAsup="";
+
 
 
 $("#stat").hide();
 $(document).ready(function(){
+
   $("#titre1").click(function(){
 
 		$("#carte").show();
@@ -277,19 +283,12 @@ function ajoutpoint(e)
 	var lng=e.latlng.lng;
 	var id=0;
 	var idsup=0;
-	   var point = {latitude:lat,longitude:lng};
+	var point = {latitude:lat,longitude:lng};
 
    addSighting(point,function(id){ 
-  
-   	idsup=id;
-   mar.bindPopup("<button onClick=\"getSighting("+id+",afficher)\">  Modifier   </button>  <button class='marker-delete-button'> supprimer </button>");});
-markers.addLayer(mar);
-
-
-
-
-
-
+   idsup=id;
+   mar.bindPopup("<button onClick=\"getSighting("+id+",afficher)\">  Modifier   </button>  <button class='marker-delete-button'> supprimer </button>");
+});
 
    mar=L.marker([lat,lng]).addTo(mymap).on('popupopen', function () {
     					var mark = this;
@@ -298,7 +297,7 @@ markers.addLayer(mar);
     					$(".marker-delete-button").click (function () {
     	
     					deleteSighting(idsup,function(){
-    						
+
     						markers.removeLayer(mark);
         					mymap.removeLayer(mark);
         					$( "#date").val("");
@@ -314,19 +313,17 @@ markers.addLayer(mar);
     	});
    	
 
-
+markers.addLayer(mar);
    
 }
 
-	mymap.on('dblclick', ajoutpoint);
+
 
 
 
 
 function afficher(data){
 	 ovni= data;
-	console.log(ovni);
-
 
 var date = new Date(ovni.year,ovni.month,ovni.day)
 var time = new Date(0);
