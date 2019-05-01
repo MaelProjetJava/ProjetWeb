@@ -81,6 +81,7 @@
 				
 
 						</div>
+						<div id=carte>
 						<div class="row" >
 						<div  class="col-md-12">
 						<form  id="recherche" role="form">
@@ -110,7 +111,7 @@
 						</div>
 						</div>
 
-						<div id=carte>
+					
 
 						<div class="row" >
 							<div class="col-md-12" >
@@ -233,7 +234,16 @@ var googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z=
 mymap.on('dblclick', ajoutpoint);
 
 
-var markers = new L.MarkerClusterGroup();
+var markers = new L.MarkerClusterGroup({
+    iconCreateFunction: function(cluster) {
+        return L.divIcon({ 
+            html: cluster.getChildCount(), 
+            className: 'mycluster', 
+            iconSize: null
+        });
+    }
+});
+
 
 let ovni="";
 
@@ -296,12 +306,16 @@ $(document).ready(function(){
        	event.preventDefault();
        	console.log($('#search').val());
       	console.log($( "#objetliste" ).val());
+      // supprime tout les points 	markers.clearLayers();
+
 
        });
 
        $('#data').submit(function(event){
 			event.preventDefault();
        	 	effacerForm();
+       	 
+       	 	
 
 
 

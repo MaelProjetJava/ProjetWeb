@@ -1,6 +1,19 @@
+.mycluster {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    background-image: url("icone2.jpg");
 
+    text-align: center;
+    font-size: 20px;    
+    line-height: 40px;
+    margin-top: -20px;
+    margin-left: -20px;
+}
 body{
 	background-color:#330086;
+
+
 }
 #mapid{
  /* utiliser  media queries pour dimensionner la taille */
