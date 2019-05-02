@@ -1,74 +1,64 @@
 //Recherche par année
 function SearchByYear(year, callback)
 {
-	getAllSightings(function(result){
-		var res = [];
-		for (var i = 0; i < result.length; i++)
-			if (result[i].year == year)
-				res.push(result[i])
-		callback(res);
-	});
+	var result = [];
+	getAllSightings(function(elem)
+	{
+		if (elem.year == year)
+			result.push(elem);
+	}, function(){callback(result);});
 }
 
 //Recherche par ville
 function SearchByCity(city, callback)
 {
-	getAllSightings(function(result){
-		var res = [];
-		for (var i = 0; i < result.length; i++)
-			if (result[i].city.search)
-				if (result[i].city.search(city) != -1)
-					res.push(result[i])
-		callback(res);
-	});
+	var result = [];
+	getAllSightings(function(elem)
+	{
+		if (elem.city.search)
+			if (elem.city.search(city) != -1)
+				result.push(elem);
+	}, function(){callback(result);});
 }
+
 
 //Recherche dans commentaires
 function SearchByComments(comments, callback)
 {
-	getAllSightings(function(result){
-		var res = [];
-		for (var i = 0; i < result.length; i++)
-		{
-			if (result[i].comments.search)
-				if (result[i].comments.search(comments) != -1)
-					res.push(result[i])
-
-			}
-		callback(res);
-	});
+	var result = [];
+	getAllSightings(function(elem)
+	{
+		if (elem.comments.search)
+			if (elem.comments.search(comments) != -1)
+				result.push(elem);
+	}, function(){callback(result);});
 }
 
 //Recherche par forme
 function SearchByShape(shape, callback)
 {
-	getAllSightings(function(result){
-		var res = [];
-		for (var i = 0; i < result.length; i++)
-		{
-			if (result[i].shape.search)
-				if (result[i].shape.search(shape) != -1)
-					res.push(result[i])
-
-			}
-		callback(res);
-	});
+	var result = [];
+	getAllSightings(function(elem)
+	{
+		if (elem.shape.search)
+			if (elem.shape.search(shape) != -1)
+				result.push(elem);
+	}, function(){callback(result);});
 }
 
-/*
-SearchByYear(2004, function(result){
-console.log(result);
-});
+function Recherche(elem, type, callback)
+{
+	if (type == "city")
+		SearchByCity(elem, function(result){callback(result);});
+	else if (type == "comments")
+		SearchByComments(elem, function(result){callback(result);});
+	else if (type == "year")
+		SearchByYear(parseInt(elem), function(result){callback(result);});
+	else
+		SearchByShape(elem, function(result){callback(result);});
 
-SearchByCity("london", function(result){
-console.log(result);
-});
+}
 
-SearchByComments(" cat ", function(result){
-console.log(result);
+Recherche("1955", "year", function(result){
+	console.log(result);
 });
-
-SearchByShape("circle", function(result){
-console.log(result);
-});
-*/
