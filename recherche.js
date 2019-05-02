@@ -59,6 +59,8 @@ function Recherche(elem, type, callback)
 
 }
 
+/*
 Recherche("1955", "year", function(result){
 	console.log(result);
 });
+*/
