@@ -303,13 +303,33 @@ $(document).ready(function(){
         })
 
        $('#recherche').submit(function(event){
-       	event.preventDefault();
-       	console.log($('#search').val());
-      	console.log($( "#objetliste" ).val());
-      // supprime tout les points 	markers.clearLayers();
+	       	event.preventDefault();
+	        // supprime tout les points 	
+	        markers.clearLayers();
+	        var valr =$('#search').val();
+	        console.log(valr);
+	        console.log( $("#objetliste" ).val());
+	      
+	        if(valr!="") {
+		      	Recherche(valr, $("#objetliste" ).val(), function(result){
+		      		var j =0;
+			      	for (var i = 0; i <result.length;i++) {
+			      		ajouterLesPoints(result[i]);
+			      	}
+					
+					mymap.addLayer(markers);
+					});
 
+	      	}
+	      	else{
+	      		getAllSightings(ajouterLesPoints, function() {mymap.addLayer(markers);});
+
+
+	      	}
 
        });
+
+
 
        $('#data').submit(function(event){
 			event.preventDefault();
