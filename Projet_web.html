@@ -160,7 +160,7 @@
 											       <br/>
 											    <div class="form-row">    
 													<div class="form-group col-md-6">
-														<button  id="modif" class="btn btn-primary"   >Modifier</button>
+														<button  id="modif" class="btn btn-primary"   >Modifier </button>
 													</div>
 													<div class="form-group col-md-6">
 														<button type="submit" id  class="btn btn-primary"   >Annuler</button>
@@ -223,12 +223,7 @@ var vue = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 });
 vue.addTo(mymap);
 
-// si on veut changer la vue de la map 
-var googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
-    maxZoom: 20,
-    subdomains:['mt0','mt1','mt2','mt3']
-});
-//googleHybrid.addTo(mymap);
+
 
 
 mymap.on('dblclick', ajoutpoint);
@@ -374,7 +369,7 @@ function ajoutpoint(e)
 
    addSighting(point,function(id){ 
    idsup=id;
-   mar.bindPopup("<button onClick=\"getSighting("+id+",afficher)\">  Modifier   </button>  <button class='marker-delete-button'> supprimer </button>");
+   mar.bindPopup("<button onClick=\"getSighting("+id+",afficher)\">  Afficher   </button>  <button class='marker-delete-button'> Supprimer </button>");
 });
 
    mar=L.marker([lat,lng]).addTo(mymap).on('popupopen', function () {
@@ -442,7 +437,7 @@ function ajouterLesPoints(point){
 					});
 	});
 
-	mar.bindPopup("<button onClick=\"getSighting("+id+",afficher)\">  Modifier  </button>  <button class='marker-delete-button'> supprimer </button>");
+	mar.bindPopup("<button onClick=\"getSighting("+id+",afficher)\">  Afficher  </button>  <button class='marker-delete-button'> Supprimer </button>");
 
 	markers.addLayer(mar);
 }
